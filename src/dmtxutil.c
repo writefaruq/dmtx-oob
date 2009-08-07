@@ -25,8 +25,9 @@ fatal_error(int errorCode, char *fmt, ...)
    exit(errorCode);
 }
 
+/* TODO: What this function does? */
 extern DmtxPassFail
-string_to_int(int *numberInt, char *number_string, char **terminate)
+string_to_int(int *numberInt, const char *number_string, char **terminate)
 {
    long number_long;
 
@@ -35,6 +36,7 @@ string_to_int(int *numberInt, char *number_string, char **terminate)
       return DmtxFail;
    }
 
+   /* FIXME: it is wrong use errno */
    errno = 0;
    number_long = strtol(number_string, terminate, 10);
 
@@ -51,6 +53,7 @@ string_to_int(int *numberInt, char *number_string, char **terminate)
    return DmtxPass;
 }
 
+/* TODO: Check if there is a glib function to replace basename function */
 extern char *
 basename(char *path)
 {

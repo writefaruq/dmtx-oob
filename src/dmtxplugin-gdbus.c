@@ -15,6 +15,15 @@
  *   59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.              *
  ***************************************************************************/
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <glib.h>
+
+#include "../gdbus/gdbus.h"
+
 #include <dmtxplugin-gdbus.h>
 
 
@@ -235,7 +244,7 @@ static char *dmtxplugin_xml_parse_bdaddr(const char *data)
 	return ctx_data.bdaddr;
 }
 
-int dmtxplugin_xml_parse_len(char *data)
+int dmtxplugin_xml_parse_len(const char *data)
 {
 	GMarkupParseContext *ctx;
 	struct context_len_data ctx_data;
@@ -258,7 +267,7 @@ int dmtxplugin_xml_parse_len(char *data)
 	return ctx_data.len;
 }
 
-static char *dmtxplugin_xml_parse_oobtags(char *data)
+static char *dmtxplugin_xml_parse_oobtags(const char *data)
 {
 	GMarkupParseContext *ctx;
 	struct context_oobtags_data ctx_data;
@@ -292,9 +301,7 @@ static char *gdbus_device_create(const char *adapter, char *bdaddr)
 {
 	DBusMessage *message, *reply, *adapter_reply;
 	DBusMessageIter iter;
-
-	char *object_path = NULL;;
-	adapter_reply = NULL;
+    char *object_path;
 
 	conn = g_dbus_setup_bus(DBUS_BUS_SYSTEM, NULL, NULL);
 	/* printf("Dbus conn: %x\n", conn); */
@@ -344,11 +351,10 @@ static char *gdbus_device_create(const char *adapter, char *bdaddr)
 	return object_path;
 }
 
-void dmtxplugin_gdbus_create_device(char *data)
+void dmtxplugin_gdbus_create_device(const char *data)
 {
         char *bdaddr;
         char *device_path;
-        device_path = NULL;
 
         bdaddr = dmtxplugin_xml_parse_bdaddr(data);
         printf("Decoded bdadd: %s \n", bdaddr);
@@ -369,7 +375,7 @@ static char *gdbus_create_paired_device(const char *adapter, char *bdaddr,
         return device_path;
 }
 
-void dmtxplugin_gdbus_create_paired_oob_device(char *data)
+void dmtxplugin_gdbus_create_paired_oob_device(const char *data)
 {
         /* test xml file and either pass as raw xml or oob data
          first test as oob data */
@@ -377,7 +383,6 @@ void dmtxplugin_gdbus_create_paired_oob_device(char *data)
         char *device_path;
         char *oobtags;
 	int len, optional_len;
-        device_path = NULL;
 
         bdaddr = dmtxplugin_xml_parse_bdaddr(data);
         printf("Decoded bdadd: %s \n", bdaddr);

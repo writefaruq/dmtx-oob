@@ -27,12 +27,7 @@
 #endif
 
 #include <stdlib.h>
-#include <errno.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
 
 #include <wand/magick-wand.h>
 #include <dmtx.h>
@@ -42,13 +37,11 @@
 
 char *program_name;
 
-int symbol_decode(char *infile, char *outfile)
+int symbol_decode(const char *infile, const char *outfile)
 {
-
-   char *file_path;
    int err;
    int img_page_index;
-   int img_scan_count = 0, page_scan_count = 0;
+    int img_scan_count = 0, page_scan_count;
    int width, height;
    unsigned char *pxl;
    decode_options opt;
@@ -64,9 +57,6 @@ int symbol_decode(char *infile, char *outfile)
 
    MagickWandGenesis();
 
-  /* Open image from file or stream (might contain multiple pages) */
-  file_path = infile;
-
   wand = NewMagickWand();
   if (wand == NULL) {
      fatal_error(EX_OSERR, "Magick error");
@@ -80,7 +70,7 @@ int symbol_decode(char *infile, char *outfile)
      }
   }
 
-  success = MagickReadImage(wand, file_path);
+    success = MagickReadImage(wand, infile);
   if (success == MagickFalse) {
      cleanup_magick(&wand, DmtxTrue);
      fatal_error(EX_OSERR, "Magick error");
@@ -343,7 +333,6 @@ print_message(DmtxRegion *reg, DmtxMessage *msg, decode_options *opt, const char
    unsigned int i;
    int remaining_data_words;
    int data_word_length;
-
     FILE *fp;
 
     fp = fopen(outfile, "wb");
@@ -377,7 +366,7 @@ print_message(DmtxRegion *reg, DmtxMessage *msg, decode_options *opt, const char
                         }
                 }
       } else {
-                (void ) fwrite(msg->output, sizeof(char), msg->outputIdx, fp);
+            fwrite(msg->output, sizeof(char), msg->outputIdx, fp);
       }
 
       if (opt->newline)
@@ -413,7 +402,7 @@ void write_diagnostic_image(DmtxDecode *dec, char *imagePath)
    fclose(fp);
 }
 
-int scale_number_string(char *s, int extent)
+int scale_number_string(const char *s, int extent)
 {
    int err;
    int numValue;

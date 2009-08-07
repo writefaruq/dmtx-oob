@@ -37,7 +37,7 @@ Contact: mike@dragonflylogic.com
 #define EX_IOERR       74
 #endif
 
-extern DmtxPassFail string_to_int(int *numberInt, char *number_string, char **terminate);
+extern DmtxPassFail string_to_int(int *numberInt, const char *number_string, char **terminate);
 extern void fatal_error(int error_code, char *fmt, ...);
 extern char *basename(char *path);
 

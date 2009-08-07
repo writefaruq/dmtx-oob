@@ -17,18 +17,6 @@
 #ifndef __DMTXPLUGIN_GDBUS_H__
 #define __DMTXPLUGIN_GDBUS_H__
 
-#include <glib.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-
-
-#include "../gdbus/gdbus.h"
-
-#include "utils.h"
-
-void dmtxplugin_gdbus_create_device(char *data);
-void dmtxplugin_gdbus_create_paired_oob_device(char *data);
-
+void dmtxplugin_gdbus_create_device(const char *data);
+void dmtxplugin_gdbus_create_paired_oob_device(const char *data);
  #endif

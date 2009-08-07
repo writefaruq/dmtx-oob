@@ -2,9 +2,8 @@
 
 bin_PROGRAMS = dmtxpluginfront
 
-dmtxpluginfront_SOURCES = dmtxplugin-front.c dmtxplugin-front.h symbol.c symbol.h dmtxutil.c \
-		dmtxutil.h  dmtxplugin-gdbus.c dmtxplugin-gdbus.h \
-		service-gdbus.c service-gdbus.h utils.c utils.h
+dmtxpluginfront_SOURCES = dmtxplugin-front.c symbol.c symbol.h dmtxutil.c \
+		dmtxutil.h  dmtxplugin-gdbus.c dmtxplugin-gdbus.h
 
 AM_CFLAGS = -Wall -g -I/usr/local/include -I/usr/include -D_MAGICK_CONFIG_H \
                 @MAGICK_CFLAGS@ @BLUEZ_CFLAGS@ @DBUS_CFLAGS@ @GLIB_CFLAGS@ \

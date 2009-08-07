@@ -14,35 +14,28 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.              *
  ***************************************************************************/
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include <glib.h>
 
-
 #include "symbol.h"
-#include "utils.h"
 #include "dmtxplugin-gdbus.h"
-#include "dmtxplugin-front.h"
 
-static void handle_symbol(char *infile)
+#define DMTX_SYMBOL_OUTPUT "output.txt"
+
+static void handle_symbol(const char *infile)
 {
-        int img_count = 0;
-        gchar *outfile = DMTX_SYMBOL_OUTPUT;
+    const gchar *outfile = DMTX_SYMBOL_OUTPUT;
         gchar *data;
         gsize len;
 
-        img_count = symbol_decode(infile, outfile);
-        if (img_count == 1) { /* assuming successful decode */
-                printf( "Decoded dmtx symbol %s to file  %s\n", infile, outfile);
-        } else {
+    if (symbol_decode(infile, outfile) != 1) {
                 printf("Failed to decode dmtx symbol\n");
                 return;
         }
 
-        /* test file */
+    /* Assuming successful decode */
+    printf("Decoded dmtx symbol %s to file  %s\n", infile, outfile);
+
+    /* Test file */
         if (!g_file_test(outfile, G_FILE_TEST_IS_REGULAR)) {
                 printf("No valid file found");
                 return;
@@ -72,4 +65,3 @@ int main (int argc, char *argv[])
 
         return 0;
 }
-

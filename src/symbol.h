@@ -79,7 +79,7 @@ typedef struct {
    int verbose;         /* -v, --verbose */
 } decode_options;
 
-int symbol_decode(char *infile, char *outfile);
+int symbol_decode(const char *infile, const char *outfile);
 
 /* Internal functions  for decoding a symbol */
 decode_options get_default_decode_options(void);
@@ -89,7 +89,7 @@ DmtxPassFail print_stats(DmtxDecode *dec, DmtxRegion *reg, DmtxMessage *msg,
 DmtxPassFail print_message(DmtxRegion *reg, DmtxMessage *msg, decode_options *opt,
         const char *outfile);
 void write_diagnostic_image(DmtxDecode *dec, char *imagePath);
-int scale_number_string(char *s, int extent);
+int scale_number_string(const char *s, int extent);
 void cleanup_magick(MagickWand **wand, int magicError);
 
 #endif
