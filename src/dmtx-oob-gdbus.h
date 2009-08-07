@@ -17,6 +17,6 @@
 #ifndef __DMTXPLUGIN_GDBUS_H__
 #define __DMTXPLUGIN_GDBUS_H__
 
-void dmtxplugin_gdbus_create_device(const char *data);
-void dmtxplugin_gdbus_create_paired_oob_device(const char *data);
+void dmtx_oob_gdbus_create_paired_oob_device(const char *data,
+	const char *oobrole);
  #endif

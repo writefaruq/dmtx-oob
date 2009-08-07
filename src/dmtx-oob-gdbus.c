@@ -1,4 +1,9 @@
 /***************************************************************************
+ *	Dmtx-OOB for Bluez OOB support                                     *
+ *	Author: Md Omar Faruque Sarker <writefaruq@gmail.com>              *
+ *	Developed as a part of Bluez GSoC 2009 project                     *
+ *	Mentor: Claudio Takahasi <claudio.takahasi@openbossa.org>          *
+ *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
@@ -13,7 +18,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.              *
- ***************************************************************************/
+***************************************************************************/
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -24,7 +29,7 @@
 
 #include "../gdbus/gdbus.h"
 
-#include <dmtxplugin-gdbus.h>
+#include <dmtx-oob-gdbus.h>
 
 
 #define EIR_TAG_MAX_LEN 1024
@@ -35,9 +40,9 @@ static int offset = 0;
 static char *ptr;
 
 struct eir_tag {
-        uint8_t len;
-        uint8_t type;
-        uint8_t *data;
+	uint8_t len;
+	uint8_t type;
+	uint8_t *data;
 };
 
 struct eir_tag *tag;
@@ -78,7 +83,7 @@ static void element_bdaddr_start(GMarkupParseContext *context,
 			if (strcmp(attribute_names[i], "value") == 0) {
 				ctx_data->bdaddr = g_strdup(attribute_values[i]);
 				ctx_data->found = TRUE;
-                                /*printf(" bddaddr : %s \n", ctx_data->bdaddr ); */
+				/*printf(" bddaddr : %s \n", ctx_data->bdaddr ); */
 			}
 		}
 	}
@@ -101,11 +106,10 @@ static void element_len_start(GMarkupParseContext *context,
 			if (strcmp(attribute_names[i], "value") == 0) {
 				sscanf(attribute_values[i], "%x", &ctx_data->len);
 				ctx_data->found = TRUE;
-                                /* printf("Got len: %x \n", ctx_data->len ); */
+				/* printf("Got len: %x \n", ctx_data->len ); */
 			}
 		}
 	}
-
 }
 
 static void element_oobtags_start(GMarkupParseContext *context,
@@ -114,16 +118,16 @@ static void element_oobtags_start(GMarkupParseContext *context,
 {
 	int i, l, t, cod;
 	struct context_oobtags_data *ctx_data = user_data;
-        tag = (struct eir_tag *) tag_buff + offset;
+	tag = (struct eir_tag *) tag_buff + offset;
 
 	if (!strcmp(element_name, "eirtag")) {
-	        //printf("===== New eir tag found=== \n");
-	        tag_count++;
-	        //printf("***offset***: %d \n", offset);
+		/* printf("===== New eir tag found=== \n"); */
+		tag_count++;
+		/* printf("***offset***: %d \n", offset); */
 		return;
 	}
 
-        ctx_data->found_len = FALSE;
+	ctx_data->found_len = FALSE;
 
         /* parse tag by tag */
         if (!strcmp(element_name, "len")) {
@@ -297,11 +301,12 @@ static char *dmtxplugin_xml_parse_oobtags(const char *data)
 	return tag_buff;
 }
 
-static char *gdbus_device_create(const char *adapter, char *bdaddr)
+static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
+	const char *oobdata, const char *oobrole, int len)
 {
 	DBusMessage *message, *reply, *adapter_reply;
 	DBusMessageIter iter;
-    char *object_path;
+	char *object_path;
 
 	conn = g_dbus_setup_bus(DBUS_BUS_SYSTEM, NULL, NULL);
 	/* printf("Dbus conn: %x\n", conn); */
@@ -330,10 +335,12 @@ static char *gdbus_device_create(const char *adapter, char *bdaddr)
         printf("Bluetoothd adapter path: %s\n", adapter);
 
         message = dbus_message_new_method_call("org.bluez", adapter,
-                                               "org.bluez.Dmtx",
+                                               "org.bluez.Adapter",
                                                "CreateOOBDevice");
         dbus_message_iter_init_append(message, &iter);
         dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &bdaddr);
+	dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &oobrole);
+	dbus_message_iter_append_basic(&iter, DBUS_TYPE_ARRAY, &oobdata);
 
         reply = dbus_connection_send_with_reply_and_block(conn,
                                                           message, -1, NULL );
@@ -351,51 +358,26 @@ static char *gdbus_device_create(const char *adapter, char *bdaddr)
 	return object_path;
 }
 
-void dmtxplugin_gdbus_create_device(const char *data)
-{
-        char *bdaddr;
-        char *device_path;
-
-        bdaddr = dmtxplugin_xml_parse_bdaddr(data);
-        printf("Decoded bdadd: %s \n", bdaddr);
-
-        device_path = gdbus_device_create(NULL, bdaddr);
-
-        if (device_path)
-                 printf("Device created on path: %s \n ", device_path);
-        else
-                printf("No response from plugin \nDevice creation failed \n");
-}
-
-static char *gdbus_create_paired_device(const char *adapter, char *bdaddr,
- char *oobtags, int len)
-{
-        char *device_path = NULL;
-        /* TODO */
-        return device_path;
-}
-
-void dmtxplugin_gdbus_create_paired_oob_device(const char *data)
+void dmtx_oob_gdbus_create_paired_oob_device(const char *data, const char *oobrole)
 {
         /* test xml file and either pass as raw xml or oob data
          first test as oob data */
         char *bdaddr;
         char *device_path;
         char *oobtags;
-	int len, optional_len;
+	int len;
 
         bdaddr = dmtxplugin_xml_parse_bdaddr(data);
         printf("Decoded bdadd: %s \n", bdaddr);
         /* parse length field and set len as get the length of optional oobtags  */
         len = dmtxplugin_xml_parse_len(data);
-        printf("Decoded len: %d \n", len);
-        optional_len = len - 8; /* Lengh field 2 Bytes + BDADDR 6 Bytes*/
+        printf("Decoded len: %d \n", len); /* TODO: reserve for future use */
 
         oobtags = dmtxplugin_xml_parse_oobtags(data);
         printf("Decoded oobtags: %s \n", oobtags);
 
 
-        device_path = gdbus_create_paired_device(NULL, bdaddr, oobtags, optional_len);
+        device_path = gdbus_create_paired_device(NULL, bdaddr, oobtags, oobrole, len);
 
         if (device_path)
                  printf("Paired Device created on path: %s \n ", device_path);

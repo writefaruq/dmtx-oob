@@ -1,10 +1,13 @@
 /***************************************************************************
- *       Dmtx-Plugin-Front                                                 *
- *       Author: Md Omar Faruque Sarker <writefaruq@gmail.com>             *
- *       libdmtx - Data Matrix Encoding/Decoding Library                   *
- *       Copyright (C) 2008, 2009 Mike Laughton                            *
- *       Copyright (C) 2008 Ryan Raasch                                    *
- *       Copyright (C) 2008 Olivier Guilyardi                              *
+ *	Dmtx-OOB for Bluez OOB support                                     *
+ *	Author: Md Omar Faruque Sarker <writefaruq@gmail.com>              *
+ *	Developed as a part of Bluez GSoC 2009 project                     *
+ *	Mentor: Claudio Takahasi <claudio.takahasi@openbossa.org>          *
+ *                                                                         *
+ *	libdmtx - Data Matrix Encoding/Decoding Library                    *
+ *	Copyright (C) 2008, 2009 Mike Laughton                             *
+ *	Copyright (C) 2008 Ryan Raasch                                     *
+ *	Copyright (C) 2008 Olivier Guilyardi                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

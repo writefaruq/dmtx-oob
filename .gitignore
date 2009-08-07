@@ -24,9 +24,8 @@ ltmain.sh
 missing
 stamp-h1
 autom4te.cache
-output.txt
 
-dmtxd.dev
+output.txt
 src/Makefile
 src/Makefile.in
-src/dmtxpluginfront
+src/dmtxoob

@@ -1,5 +1,5 @@
 AC_INIT(configure.ac)
-AM_INIT_AUTOMAKE(dmtxplugin-front, 0.1)
+AM_INIT_AUTOMAKE(dmtx-oob, 0.1)
 AC_PREFIX_DEFAULT("/usr")
 AM_CONFIG_HEADER(config.h)
 
