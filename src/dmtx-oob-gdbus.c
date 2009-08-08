@@ -293,10 +293,10 @@ static char *dmtxplugin_xml_parse_oobtags(const char *data)
 
         ret = g_markup_parse_context_parse(ctx, data, size, &error);
 	if (ret == FALSE)
-                printf("parser returned %d error : %s \n", ret, error->message );
+		printf("parser returned %d error : %s \n", ret, error->message );
 
 
-        g_markup_parse_context_free(ctx);
+	g_markup_parse_context_free(ctx);
 
 	return tag_buff;
 }
@@ -305,8 +305,9 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 	const char *oobdata, const char *oobrole, int len)
 {
 	DBusMessage *message, *reply, *adapter_reply;
-	DBusMessageIter iter;
+	DBusMessageIter iter, iter_array, dict;
 	char *object_path;
+	int i;
 
 	conn = g_dbus_setup_bus(DBUS_BUS_SYSTEM, NULL, NULL);
 	/* printf("Dbus conn: %x\n", conn); */
@@ -315,8 +316,7 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 
 	if (adapter == NULL) {
 		message = dbus_message_new_method_call("org.bluez", "/",
-						       "org.bluez.Manager",
-						       "DefaultAdapter");
+		"org.bluez.Manager", "DefaultAdapter");
 
 		adapter_reply = dbus_connection_send_with_reply_and_block(conn,
                                                                 message, -1, NULL );
@@ -336,16 +336,39 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 
         message = dbus_message_new_method_call("org.bluez", adapter,
                                                "org.bluez.Adapter",
-                                               "CreateOOBDevice");
-        dbus_message_iter_init_append(message, &iter);
+						//"CreateDevice");
+                                               "CreatePairedOOBDevice");
+	if (!message) {
+		fprintf(stderr, "Can't allocate new method call\n");
+		return NULL;
+	}
+
+	/* Prepare the message args */
+	dbus_message_iter_init_append(message, &iter);
         dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &bdaddr);
 	dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &oobrole);
-	dbus_message_iter_append_basic(&iter, DBUS_TYPE_ARRAY, &oobdata);
+	//dbus_message_iter_append_fixed_array(&iter, DBUS_TYPE_ARRAY, &oobdata);
+
+	dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY,
+			"v", &iter_array);
+
+
+	for (i = 0; i < 5; i++) {
+		uint8_t byte = 0x11;
+
+		dbus_message_iter_append_basic(&iter_array,
+				DBUS_TYPE_BYTE, &byte);
+	}
+	dbus_message_iter_close_container(&iter, &iter_array);
+	printf("container closed \n");
+
 
         reply = dbus_connection_send_with_reply_and_block(conn,
                                                           message, -1, NULL );
-        if (!reply)
+        if (!reply) {
+		fprintf(stderr, "Can't get reply from dbus\n");
                 return NULL;
+	}
 
         if (dbus_message_get_args(reply, NULL, DBUS_TYPE_OBJECT_PATH, &object_path,
                                                         DBUS_TYPE_INVALID) == FALSE)
@@ -382,7 +405,7 @@ void dmtx_oob_gdbus_create_paired_oob_device(const char *data, const char *oobro
         if (device_path)
                  printf("Paired Device created on path: %s \n ", device_path);
         else {
-                printf("No response from plugin \n");
+                printf("No response from Bluez \n");
                 printf("Paired Device creation failed\n");
         }
 
