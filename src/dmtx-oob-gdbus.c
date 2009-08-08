@@ -343,25 +343,11 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 		return NULL;
 	}
 
-	/* Prepare the message args */
-	dbus_message_iter_init_append(message, &iter);
-        dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &bdaddr);
-	dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &oobrole);
-	//dbus_message_iter_append_fixed_array(&iter, DBUS_TYPE_ARRAY, &oobdata);
-
-	dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY,
-			"v", &iter_array);
-
-
-	for (i = 0; i < 5; i++) {
-		uint8_t byte = 0x11;
-
-		dbus_message_iter_append_basic(&iter_array,
-				DBUS_TYPE_BYTE, &byte);
-	}
-	dbus_message_iter_close_container(&iter, &iter_array);
-	printf("container closed \n");
-
+	dbus_message_append_args(message,
+				DBUS_TYPE_STRING, &bdaddr,
+				DBUS_TYPE_STRING, &oobrole,
+				DBUS_TYPE_ARRAY, DBUS_TYPE_BYTE,
+				&oobdata, len, DBUS_TYPE_INVALID);
 
         reply = dbus_connection_send_with_reply_and_block(conn,
                                                           message, -1, NULL );

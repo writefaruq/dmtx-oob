@@ -9,7 +9,7 @@
 </length>
 <!-- Bluetooth Address (MAC)-->
 <bdaddr>
-    <text value="0012403A1D34" />
+    <text value="00:12:40:3A:1D:34" />
 </bdaddr>
 </mandatorypart>
 <optionalpart>
