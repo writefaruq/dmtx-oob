@@ -351,6 +351,7 @@ DmtxPassFail print_stats(DmtxDecode *dec, DmtxRegion *reg, DmtxMessage *msg,
 		fprintf(stdout, "%d,%d:", (int)(p11.X + 0.5),
 			height - 1 - (int)(p11.Y + 0.5));
 		fprintf(stdout, "%d,%d:", (int)(p01.X + 0.5),
+			height - 1 - (int)(p01.Y + 0.5));
 	}
 
 	return DmtxPass;
