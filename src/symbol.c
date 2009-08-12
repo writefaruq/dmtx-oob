@@ -333,16 +333,16 @@ DmtxPassFail print_stats(DmtxDecode *dec, DmtxRegion *reg, DmtxMessage *msg,
 DmtxPassFail
 print_message(DmtxRegion *reg, DmtxMessage *msg, decode_options *opt, const char *outfile)
 {
-   unsigned int i;
-   int remaining_data_words;
-   int data_word_length;
-    FILE *fp;
+	unsigned int i;
+	int remaining_data_words;
+	int data_word_length;
+	FILE *fp;
 
-    fp = fopen(outfile, "wb");
-    if (fp == NULL) {
-        perror("failed to open output file");
-        return EXIT_FAILURE;
-    }
+	fp = fopen(outfile, "wb");
+	if (fp == NULL) {
+		perror("failed to open output file");
+		return EXIT_FAILURE;
+	}
 
    if (opt->codewords == DmtxTrue) {
       data_word_length = dmtxGetSymbolAttribute(DmtxSymAttribSymbolDataWords, reg->sizeIdx);
@@ -369,7 +369,7 @@ print_message(DmtxRegion *reg, DmtxMessage *msg, decode_options *opt, const char
                         }
                 }
       } else {
-            (void )fwrite(msg->output, sizeof(char), msg->outputIdx, fp);
+		i = fwrite(msg->output, sizeof(char), msg->outputIdx, fp);
       }
 
       if (opt->newline)
