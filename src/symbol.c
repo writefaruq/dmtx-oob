@@ -369,7 +369,7 @@ print_message(DmtxRegion *reg, DmtxMessage *msg, decode_options *opt, const char
                         }
                 }
       } else {
-            fwrite(msg->output, sizeof(char), msg->outputIdx, fp);
+            (void )fwrite(msg->output, sizeof(char), msg->outputIdx, fp);
       }
 
       if (opt->newline)

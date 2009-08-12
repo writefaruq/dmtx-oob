@@ -305,9 +305,7 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 	const char *oobdata, const char *oobrole, int len)
 {
 	DBusMessage *message, *reply, *adapter_reply;
-	DBusMessageIter iter, iter_array, dict;
 	char *object_path;
-	int i;
 
 	conn = g_dbus_setup_bus(DBUS_BUS_SYSTEM, NULL, NULL);
 	/* printf("Dbus conn: %x\n", conn); */
@@ -369,8 +367,6 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 
 void dmtx_oob_gdbus_create_paired_oob_device(const char *data, const char *oobrole)
 {
-        /* test xml file and either pass as raw xml or oob data
-         first test as oob data */
         char *bdaddr;
         char *device_path;
         char *oobtags;
@@ -384,7 +380,6 @@ void dmtx_oob_gdbus_create_paired_oob_device(const char *data, const char *oobro
 
         oobtags = dmtxplugin_xml_parse_oobtags(data);
         printf("Decoded oobtags: %s \n", oobtags);
-
 
         device_path = gdbus_create_paired_device(NULL, bdaddr, oobtags, oobrole, len);
 
