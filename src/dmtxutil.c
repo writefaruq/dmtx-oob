@@ -36,60 +36,57 @@
 
 extern char *program_name;
 
-extern void
-fatal_error(int errorCode, char *fmt, ...)
+extern void fatal_error(int errorCode, char *fmt, ...)
 {
-   va_list va;
+	va_list va;
 
-   va_start(va, fmt);
-   fprintf(stderr, "%s: ", program_name);
-   vfprintf(stderr, fmt, va);
-   va_end(va);
-   fprintf(stderr, "\n\n");
-   fflush(stderr);
+	va_start(va, fmt);
+	fprintf(stderr, "%s: ", program_name);
+	vfprintf(stderr, fmt, va);
+	va_end(va);
+	fprintf(stderr, "\n\n");
+	fflush(stderr);
 
-   exit(errorCode);
+	exit(errorCode);
 }
 
 /* TODO: What this function does? */
 extern DmtxPassFail
 string_to_int(int *numberInt, const char *number_string, char **terminate)
 {
-   long number_long;
+	long number_long;
+	int err = 0;
 
-   if (!isdigit(*number_string)) {
-      *numberInt = DmtxUndefined;
-      return DmtxFail;
-   }
+	if (!isdigit(*number_string)) {
+		*numberInt = DmtxUndefined;
+		return DmtxFail;
+	}
 
-   /* FIXME: it is wrong use errno */
-   errno = 0;
-   number_long = strtol(number_string, terminate, 10);
 
-   while (isspace((int)**terminate))
-      (*terminate)++;
+	number_long = strtol(number_string, terminate, 10);
 
-   if (errno != 0 || (**terminate != '\0' && **terminate != '%')) {
-      *numberInt = DmtxUndefined;
-      return DmtxFail;
-   }
+	while (isspace((int)**terminate))
+	(*terminate)++;
+	err = errno;
+	if (err != 0 || (**terminate != '\0' && **terminate != '%')) {
+		*numberInt = DmtxUndefined;
+		return DmtxFail;
+	}
 
-   *numberInt = (int)number_long;
+	*numberInt = (int)number_long;
 
-   return DmtxPass;
+	return DmtxPass;
 }
 
-/* TODO: Check if there is a glib function to replace basename function */
-extern char *
-basename(char *path)
+extern char *basename(char *path)
 {
-   assert(path);
+	assert(path);
 
-   if (strrchr(path, '/'))
-      path = strrchr(path, '/') + 1;
+	if (strrchr(path, '/'))
+		path = strrchr(path, '/') + 1;
 
-   if (strrchr(path, '\\'))
-      path = strrchr(path, '\\') + 1;
+	if (strrchr(path, '\\'))
+		path = strrchr(path, '\\') + 1;
 
-   return path;
+	return path;
 }

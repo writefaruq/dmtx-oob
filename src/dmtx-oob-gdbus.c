@@ -129,87 +129,87 @@ static void element_oobtags_start(GMarkupParseContext *context,
 
 	ctx_data->found_len = FALSE;
 
-        /* parse tag by tag */
-        if (!strcmp(element_name, "len")) {
-                //printf("tag %d len start\n", tag_count);
-                return;
-        }
+	/* parse tag by tag */
+	if (!strcmp(element_name, "len")) {
+		//printf("tag %d len start\n", tag_count);
+		return;
+	}
 
-         if(!strcmp(element_name, "unit8") && !(ctx_data->found_len)) {
+	 if(!strcmp(element_name, "unit8") && !(ctx_data->found_len)) {
 		for (i = 0; attribute_names[i]; i++) {
-		        //printf(" attb val %s \n", attribute_values[i]);
+			//printf(" attb val %s \n", attribute_values[i]);
 			if (strcmp(attribute_names[i], "value") == 0) {
 				sscanf(attribute_values[i], "%x", &l);
-                                tag->len = l; /*FIXME : can't find the value later */
-                                //printf(" tag len %x \n", tag->len);
-                                ptr = tag_buff;
-                                strncat(ptr, attribute_values[i]+2, 2 );
-                                ctx_data->found_len = TRUE;
-                                offset += sizeof(l);
+				tag->len = l; /*FIXME : can't find the value later */
+				//printf(" tag len %x \n", tag->len);
+				ptr = tag_buff;
+				strncat(ptr, attribute_values[i]+2, 2 );
+				ctx_data->found_len = TRUE;
+				offset += sizeof(l);
 			}
 		}
 		return;
-         }
+	 }
 
-        ctx_data->found_datatype = FALSE;
+	ctx_data->found_datatype = FALSE;
 
-        if (!strcmp(element_name, "eirdatatype")) {
-                //printf("tag %d datatype start\n", tag_count);
-                return;
-        }
+	if (!strcmp(element_name, "eirdatatype")) {
+		//printf("tag %d datatype start\n", tag_count);
+		return;
+	}
 
-        if (!strcmp(element_name, "unit8") && !(ctx_data->found_datatype)) {
+	if (!strcmp(element_name, "unit8") && !(ctx_data->found_datatype)) {
 		for (i = 0; attribute_names[i]; i++) {
 			if (strcmp(attribute_names[i], "value") == 0) {
 				sscanf(attribute_values[i], "%x", &t);
-                                tag->type =  t;
-                                //printf(" tag type %x \n", tag->type);
-                                ctx_data->found_datatype = TRUE;
-                                ptr = ptr + 2;
-                                strncat(ptr, attribute_values[i]+2, 2 );
+				tag->type =  t;
+				//printf(" tag type %x \n", tag->type);
+				ctx_data->found_datatype = TRUE;
+				ptr = ptr + 2;
+				strncat(ptr, attribute_values[i]+2, 2 );
 			}
 		}
 		return;
 	}
 
-        ctx_data->found_data = FALSE;
+	ctx_data->found_data = FALSE;
 
-        if (!strcmp(element_name, "eirdata")) {
-                //printf("tag %d data start\n", tag_count);
-                ctx_data->found_bdaddr = TRUE;
-                return;
-        }
+	if (!strcmp(element_name, "eirdata")) {
+		//printf("tag %d data start\n", tag_count);
+		ctx_data->found_bdaddr = TRUE;
+		return;
+	}
 
-        if (!strcmp(element_name, "text") && !(ctx_data->found_data)
-                && ctx_data->found_bdaddr) {
+	if (!strcmp(element_name, "text") && !(ctx_data->found_data)
+		&& ctx_data->found_bdaddr) {
 		for (i = 0; attribute_names[i]; i++) {
 			if (strcmp(attribute_names[i], "value") == 0) {
 				tag->data = (uint8_t *) attribute_values[i];
-                                //printf(" tag data %s \n", tag->data);
-                                ctx_data->found_data = TRUE;
-                                ptr = ptr + 2;
-                                strncat(ptr, (char *) tag->data, 32 );
+				//printf(" tag data %s \n", tag->data);
+				ctx_data->found_data = TRUE;
+				ptr = ptr + 2;
+				strncat(ptr, (char *) tag->data, 32 );
 			}
 		}
 		return;
 	}
 	if ( !strcmp(element_name, "unit32") && !(ctx_data->found_data)
-                && (ctx_data->found_bdaddr)) {
+		&& (ctx_data->found_bdaddr)) {
 		for (i = 0; attribute_names[i]; i++) {
 			if (strcmp(attribute_names[i], "value") == 0) {
-			        sscanf(attribute_values[i], "%x", &cod);
-			        char buff[10];
-			        sprintf(buff, "%x", cod);
+				sscanf(attribute_values[i], "%x", &cod);
+				char buff[10];
+				sprintf(buff, "%x", cod);
 				tag->data = (uint8_t *) buff;
-                                //printf(" cod tag data %s \n", tag->data);
-                                ctx_data->found_data = TRUE;
-                                ptr = ptr + 2;
-                                strncat(ptr, (char *) tag->data+2, 6 );
+				//printf(" cod tag data %s \n", tag->data);
+				ctx_data->found_data = TRUE;
+				ptr = ptr + 2;
+				strncat(ptr, (char *) tag->data+2, 6 );
 			}
 		}
 		return;
-        }
-}
+	}
+	}
 
 static GMarkupParser bdaddr_parser = {
 	element_bdaddr_start, NULL, NULL, NULL, NULL
@@ -228,7 +228,7 @@ static char *dmtxplugin_xml_parse_bdaddr(const char *data)
 	GMarkupParseContext *ctx;
 	struct context_bdaddr_data ctx_data;
 	int size, ret;
-        GError *error;
+	GError *error;
 	size = strlen(data);
 	printf("XML parser: start parsing with data size %d\n", size);
 
@@ -236,12 +236,12 @@ static char *dmtxplugin_xml_parse_bdaddr(const char *data)
 	ctx_data.bdaddr = NULL;
 	ctx = g_markup_parse_context_new(&bdaddr_parser, 0, &ctx_data, NULL);
 
-        ret = g_markup_parse_context_parse(ctx, data, size, &error);
+	ret = g_markup_parse_context_parse(ctx, data, size, &error);
 
-        if (ret == FALSE) {
-                printf("parser returned %d error : %s \n", ret, error->message );
+	if (ret == FALSE) {
+		printf("parser returned %d error : %s \n", ret, error->message );
 		g_free(ctx_data.bdaddr);
-        }
+	}
 
 	g_markup_parse_context_free(ctx);
 
@@ -256,15 +256,13 @@ int dmtxplugin_xml_parse_len(const char *data)
 	GError *error;
 
 	size = strlen(data);
-	//printf("XML parser: start parsing with data size %d\n", size);
-
 	ctx_data.found = FALSE;
 	ctx_data.len = 0;
 	ctx = g_markup_parse_context_new(&len_parser, 0, &ctx_data, NULL);
 
-        ret = g_markup_parse_context_parse(ctx, data, size, &error);
-	if ( ret == FALSE)
-	        printf("parser returned %d error : %s \n", ret, error->message );
+	ret = g_markup_parse_context_parse(ctx, data, size, &error);
+	if (ret == FALSE)
+		printf("parser returned %d error : %s \n", ret, error->message );
 
 	g_markup_parse_context_free(ctx);
 
@@ -279,15 +277,15 @@ static char *dmtxplugin_xml_parse_oobtags(const char *data)
 	GError *error;
 
 	size = strlen(data);
-	//printf("XML parser: start parsing with data size %d\n", size);
+	/* printf("XML parser: start parsing with data size %d\n", size); */
 
 	ctx_data.oobtags = NULL;
-        ctx_data.found_len = FALSE;
+	ctx_data.found_len = FALSE;
 	ctx_data.found_datatype= FALSE;
 	ctx_data.found_data = FALSE;
 	ctx_data.found_bdaddr = FALSE;
-        offset = 0;
-        tag_buff[EIR_TAG_MAX_LEN - 1] = '\0';
+	offset = 0;
+	tag_buff[EIR_TAG_MAX_LEN - 1] = '\0';
 
 	ctx = g_markup_parse_context_new(&oobtags_parser, 0, &ctx_data, NULL);
 
@@ -310,32 +308,32 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 	conn = g_dbus_setup_bus(DBUS_BUS_SYSTEM, NULL, NULL);
 	/* printf("Dbus conn: %x\n", conn); */
 	if (conn == NULL)
-                return NULL;
+		return NULL;
 
 	if (adapter == NULL) {
 		message = dbus_message_new_method_call("org.bluez", "/",
 		"org.bluez.Manager", "DefaultAdapter");
 
 		adapter_reply = dbus_connection_send_with_reply_and_block(conn,
-                                                                message, -1, NULL );
-                if (adapter_reply == NULL) {
-                        printf("Bluetoothd or adapter unavailable\n");
-                        return NULL;
-                } else {
-                        dbus_message_unref(adapter_reply);
-                }
+								message, -1, NULL );
+		if (adapter_reply == NULL) {
+			printf("Bluetoothd or adapter unavailable\n");
+			return NULL;
+		} else {
+			dbus_message_unref(adapter_reply);
+		}
 
 		if (dbus_message_get_args(adapter_reply, NULL, DBUS_TYPE_OBJECT_PATH,
-                                        &adapter, DBUS_TYPE_INVALID) == FALSE )
+					&adapter, DBUS_TYPE_INVALID) == FALSE )
 			return NULL;
 	}
 
-        printf("Bluetoothd adapter path: %s\n", adapter);
+	printf("Bluetoothd adapter path: %s\n", adapter);
 
-        message = dbus_message_new_method_call("org.bluez", adapter,
-                                               "org.bluez.Adapter",
+	message = dbus_message_new_method_call("org.bluez", adapter,
+					       "org.bluez.Adapter",
 						//"CreateDevice");
-                                               "CreatePairedOOBDevice");
+					       "CreatePairedOOBDevice");
 	if (!message) {
 		fprintf(stderr, "Can't allocate new method call\n");
 		return NULL;
@@ -347,16 +345,16 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 				DBUS_TYPE_ARRAY, DBUS_TYPE_BYTE,
 				&oobdata, len, DBUS_TYPE_INVALID);
 
-        reply = dbus_connection_send_with_reply_and_block(conn,
-                                                          message, -1, NULL );
-        if (!reply) {
+	reply = dbus_connection_send_with_reply_and_block(conn,
+							  message, -1, NULL );
+	if (!reply) {
 		fprintf(stderr, "Can't get reply from dbus\n");
-                return NULL;
+		return NULL;
 	}
 
-        if (dbus_message_get_args(reply, NULL, DBUS_TYPE_OBJECT_PATH, &object_path,
-                                                        DBUS_TYPE_INVALID) == FALSE)
-                return NULL;
+	if (dbus_message_get_args(reply, NULL, DBUS_TYPE_OBJECT_PATH, &object_path,
+							DBUS_TYPE_INVALID) == FALSE)
+		return NULL;
 
 	dbus_message_unref(reply);
 
@@ -367,27 +365,27 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 
 void dmtx_oob_gdbus_create_paired_oob_device(const char *data, const char *oobrole)
 {
-        char *bdaddr;
-        char *device_path;
-        char *oobtags;
+	char *bdaddr;
+	char *device_path;
+	char *oobtags;
 	int len;
 
-        bdaddr = dmtxplugin_xml_parse_bdaddr(data);
-        printf("Decoded bdadd: %s \n", bdaddr);
-        /* parse length field and set len as get the length of optional oobtags  */
-        len = dmtxplugin_xml_parse_len(data);
-        printf("Decoded len: %d \n", len); /* TODO: reserve for future use */
+	bdaddr = dmtxplugin_xml_parse_bdaddr(data);
+	printf("Decoded bdadd: %s \n", bdaddr);
+	/* parse length field and set len as get the length of optional oobtags  */
+	len = dmtxplugin_xml_parse_len(data);
+	printf("Decoded len: %d \n", len); /* TODO: reserve for future use */
 
-        oobtags = dmtxplugin_xml_parse_oobtags(data);
-        printf("Decoded oobtags: %s \n", oobtags);
+	oobtags = dmtxplugin_xml_parse_oobtags(data);
+	printf("Decoded oobtags: %s \n", oobtags);
 
-        device_path = gdbus_create_paired_device(NULL, bdaddr, oobtags, oobrole, len);
+	device_path = gdbus_create_paired_device(NULL, bdaddr, oobtags, oobrole, len);
 
-        if (device_path)
-                 printf("Paired Device created on path: %s \n ", device_path);
-        else {
-                printf("No response from Bluez \n");
-                printf("Paired Device creation failed\n");
-        }
+	if (device_path)
+		 printf("Paired Device created on path: %s \n ", device_path);
+	else {
+		printf("No response from Bluez \n");
+		printf("Paired Device creation failed\n");
+	}
 
 }
