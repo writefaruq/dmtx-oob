@@ -52,31 +52,31 @@
 #define DMTXWRITE_BUFFER_SIZE 4096
 
 typedef struct {
-   int codewords;       /* -c, --codewords */
-   int edgemin;         /* -e, --minimum-edge */
-   int edgemax;         /* -E, --maximum-edge */
-   int scangap;         /* -g, --gap */
-   int timeout;       /* -m, --milliseconds */
-   int newline;         /* -n, --newline */
-   int page;            /* -p, --page */
-   int square_devn;      /* -q, --square-deviation */
-   int dpi;             /* -r, --resolution */
-   int size_idx_expected; /* -s, --symbol-size */
-   int edge_thresh;      /* -t, --threshold */
-   char *xmin;          /* -x, --x-range-min */
-   char *xmax;          /* -X, --x-range-max */
-   char *ymin;          /* -y, --y-range-min */
-   char *ymax;          /* -Y, --y-range-max */
-   int corrections_max;  /* -C, --corrections-max */
-   int diagnose;        /* -D, --diagnose */
-   int mosaic;          /* -M, --mosaic */
-   int stop_after;       /* -N, --stop-after */
-   int page_numbers;     /* -P, --page-numbers */
-   int corners;         /* -R, --corners */
-   int shrink_max;       /* -S, --shrink */
-   int shrink_min;       /* -S, --shrink (if range specified) */
-   int unicode;         /* -U, --unicode */
-   int verbose;         /* -v, --verbose */
+	int codewords;       /* -c, --codewords */
+	int edgemin;         /* -e, --minimum-edge */
+	int edgemax;         /* -E, --maximum-edge */
+	int scangap;         /* -g, --gap */
+	int timeout;       /* -m, --milliseconds */
+	int newline;         /* -n, --newline */
+	int page;            /* -p, --page */
+	int square_devn;      /* -q, --square-deviation */
+	int dpi;             /* -r, --resolution */
+	int size_idx_expected; /* -s, --symbol-size */
+	int edge_thresh;      /* -t, --threshold */
+	char *xmin;          /* -x, --x-range-min */
+	char *xmax;          /* -X, --x-range-max */
+	char *ymin;          /* -y, --y-range-min */
+	char *ymax;          /* -Y, --y-range-max */
+	int corrections_max;  /* -C, --corrections-max */
+	int diagnose;        /* -D, --diagnose */
+	int mosaic;          /* -M, --mosaic */
+	int stop_after;       /* -N, --stop-after */
+	int page_numbers;     /* -P, --page-numbers */
+	int corners;         /* -R, --corners */
+	int shrink_max;       /* -S, --shrink */
+	int shrink_min;       /* -S, --shrink (if range specified) */
+	int unicode;         /* -U, --unicode */
+	int verbose;         /* -v, --verbose */
 } decode_options;
 
 int symbol_decode(const char *infile, const char *outfile);
@@ -85,9 +85,9 @@ int symbol_decode(const char *infile, const char *outfile);
 decode_options get_default_decode_options(void);
 DmtxPassFail set_decode_options(DmtxDecode *dec, DmtxImage *img, decode_options *opt);
 DmtxPassFail print_stats(DmtxDecode *dec, DmtxRegion *reg, DmtxMessage *msg,
-        int img_page_index, decode_options *opt);
+	int img_page_index, decode_options *opt);
 DmtxPassFail print_message(DmtxRegion *reg, DmtxMessage *msg, decode_options *opt,
-        const char *outfile);
+	const char *outfile);
 void write_diagnostic_image(DmtxDecode *dec, char *imagePath);
 int scale_number_string(const char *s, int extent);
 void cleanup_magick(MagickWand **wand, int magicError);
