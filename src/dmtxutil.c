@@ -77,16 +77,3 @@ string_to_int(int *numberInt, const char *number_string, char **terminate)
 
 	return DmtxPass;
 }
-
-extern char *basename(char *path)
-{
-	assert(path);
-
-	if (strrchr(path, '/'))
-		path = strrchr(path, '/') + 1;
-
-	if (strrchr(path, '\\'))
-		path = strrchr(path, '\\') + 1;
-
-	return path;
-}

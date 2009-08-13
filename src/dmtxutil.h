@@ -39,6 +39,4 @@ Contact: mike@dragonflylogic.com
 
 extern DmtxPassFail string_to_int(int *numberInt, const char *number_string, char **terminate);
 extern void fatal_error(int error_code, char *fmt, ...);
-extern char *basename(char *path);
-
 #endif
