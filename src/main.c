@@ -22,7 +22,7 @@
 #include <glib.h>
 
 #include "symbol.h"
-#include "dmtx-oob-gdbus.h"
+#include "dbus.h"
 
 #define DMTX_SYMBOL_OUTPUT "output.txt"
 #define OOB_ROLE "initiator"

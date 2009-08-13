@@ -29,7 +29,7 @@
 
 #include <dbus/dbus.h>
 
-#include <dmtx-oob-gdbus.h>
+#include "dbus.h"
 
 
 #define EIR_TAG_MAX_LEN 1024

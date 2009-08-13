@@ -32,7 +32,8 @@
 #include <errno.h>
 #include <assert.h>
 #include <dmtx.h>
-#include "dmtxutil.h"
+
+#include "util.h"
 
 extern char *program_name;
 

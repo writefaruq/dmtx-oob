@@ -14,9 +14,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.              *
  ***************************************************************************/
-#ifndef __DMTXPLUGIN_GDBUS_H__
-#define __DMTXPLUGIN_GDBUS_H__
+#ifndef __DBUS_H__
+#define __DBUS_H__
 
 void dmtx_oob_gdbus_create_paired_oob_device(const char *data,
-	const char *oobrole);
- #endif
+		const char *oobrole);
+#endif

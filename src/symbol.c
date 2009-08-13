@@ -29,13 +29,12 @@
 #include <config.h>
 #endif
 
-#include <stdlib.h>
-#include <unistd.h>
+#include <assert.h>
+#include <math.h>
 
-#include <wand/magick-wand.h>
 #include <dmtx.h>
-#include "dmtxutil.h"
 
+#include "util.h"
 #include "symbol.h"
 
 char *program_name;

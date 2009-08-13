@@ -2,8 +2,8 @@
 
 bin_PROGRAMS = dmtxoob
 
-dmtxoob_SOURCES = dmtx-oob.c symbol.c symbol.h dmtxutil.c \
-		dmtxutil.h  dmtx-oob-gdbus.c dmtx-oob-gdbus.h
+dmtxoob_SOURCES = main.c symbol.c symbol.h\
+				util.c  util.h  dbus.c dbus.h
 
 AM_CFLAGS = -Wall -g -I/usr/local/include -I/usr/include -D_MAGICK_CONFIG_H \
                 @MAGICK_CFLAGS@ @BLUEZ_CFLAGS@ @DBUS_CFLAGS@ @GLIB_CFLAGS@

@@ -21,25 +21,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.              *
 ***************************************************************************/
-#ifndef __DMTXSYMBOL_H__
-#define __DMTXSYMBOL_H__
+#ifndef __SYMBOL_H__
+#define __SYMBOL_H__
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <getopt.h>
-#include <errno.h>
-#include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <math.h>
-#include <stdarg.h>
-#include <assert.h>
 #include <wand/magick-wand.h>
 #include <dmtx.h>
-#include "dmtxutil.h"
+#include <string.h>
+
+#include "util.h"
 
 #if ENABLE_NLS
 # include <libintl.h>
