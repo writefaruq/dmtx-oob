@@ -27,7 +27,7 @@
 
 #include <glib.h>
 
-#include "../gdbus/gdbus.h"
+#include <dbus/dbus.h>
 
 #include <dmtx-oob-gdbus.h>
 
@@ -87,7 +87,6 @@ static void element_bdaddr_start(GMarkupParseContext *context,
 			}
 		}
 	}
-
 }
 
 static void element_len_start(GMarkupParseContext *context,
@@ -96,9 +95,8 @@ static void element_len_start(GMarkupParseContext *context,
 {
 	struct context_len_data *ctx_data = user_data;
 
-	if (!strcmp(element_name, "length")) {
+	if (!strcmp(element_name, "length"))
 		return;
-	}
 
 	if (!strcmp(element_name, "unit16") && !(ctx_data->found)) {
 		int i;
@@ -135,7 +133,7 @@ static void element_oobtags_start(GMarkupParseContext *context,
 		return;
 	}
 
-	 if(!strcmp(element_name, "unit8") && !(ctx_data->found_len)) {
+	if(!strcmp(element_name, "unit8") && !(ctx_data->found_len)) {
 		for (i = 0; attribute_names[i]; i++) {
 			//printf(" attb val %s \n", attribute_values[i]);
 			if (strcmp(attribute_names[i], "value") == 0) {
@@ -149,7 +147,7 @@ static void element_oobtags_start(GMarkupParseContext *context,
 			}
 		}
 		return;
-	 }
+	}
 
 	ctx_data->found_datatype = FALSE;
 
@@ -181,7 +179,7 @@ static void element_oobtags_start(GMarkupParseContext *context,
 	}
 
 	if (!strcmp(element_name, "text") && !(ctx_data->found_data)
-		&& ctx_data->found_bdaddr) {
+			&& ctx_data->found_bdaddr) {
 		for (i = 0; attribute_names[i]; i++) {
 			if (strcmp(attribute_names[i], "value") == 0) {
 				tag->data = (uint8_t *) attribute_values[i];
@@ -193,8 +191,8 @@ static void element_oobtags_start(GMarkupParseContext *context,
 		}
 		return;
 	}
-	if ( !strcmp(element_name, "unit32") && !(ctx_data->found_data)
-		&& (ctx_data->found_bdaddr)) {
+	if (!strcmp(element_name, "unit32") && !(ctx_data->found_data)
+			&& (ctx_data->found_bdaddr)) {
 		for (i = 0; attribute_names[i]; i++) {
 			if (strcmp(attribute_names[i], "value") == 0) {
 				sscanf(attribute_values[i], "%x", &cod);
@@ -209,7 +207,7 @@ static void element_oobtags_start(GMarkupParseContext *context,
 		}
 		return;
 	}
-	}
+}
 
 static GMarkupParser bdaddr_parser = {
 	element_bdaddr_start, NULL, NULL, NULL, NULL
@@ -248,7 +246,7 @@ static char *dmtxplugin_xml_parse_bdaddr(const char *data)
 	return ctx_data.bdaddr;
 }
 
-int dmtxplugin_xml_parse_len(const char *data)
+static int dmtxplugin_xml_parse_len(const char *data)
 {
 	GMarkupParseContext *ctx;
 	struct context_len_data ctx_data;
@@ -262,7 +260,7 @@ int dmtxplugin_xml_parse_len(const char *data)
 
 	ret = g_markup_parse_context_parse(ctx, data, size, &error);
 	if (ret == FALSE)
-		printf("parser returned %d error : %s \n", ret, error->message );
+		printf("parser returned %d error : %s \n", ret, error->message);
 
 	g_markup_parse_context_free(ctx);
 
@@ -289,7 +287,7 @@ static char *dmtxplugin_xml_parse_oobtags(const char *data)
 
 	ctx = g_markup_parse_context_new(&oobtags_parser, 0, &ctx_data, NULL);
 
-        ret = g_markup_parse_context_parse(ctx, data, size, &error);
+	ret = g_markup_parse_context_parse(ctx, data, size, &error);
 	if (ret == FALSE)
 		printf("parser returned %d error : %s \n", ret, error->message );
 
@@ -304,18 +302,19 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 {
 	DBusMessage *message, *reply, *adapter_reply;
 	char *object_path;
+	DBusError derr;
 
-	conn = g_dbus_setup_bus(DBUS_BUS_SYSTEM, NULL, NULL);
-	/* printf("Dbus conn: %x\n", conn); */
+	dbus_error_init(&derr);
+	conn = dbus_bus_get(DBUS_BUS_SYSTEM, &derr);
 	if (conn == NULL)
 		return NULL;
 
 	if (adapter == NULL) {
 		message = dbus_message_new_method_call("org.bluez", "/",
-		"org.bluez.Manager", "DefaultAdapter");
+				"org.bluez.Manager", "DefaultAdapter");
 
 		adapter_reply = dbus_connection_send_with_reply_and_block(conn,
-								message, -1, NULL );
+				message, -1, NULL );
 		if (adapter_reply == NULL) {
 			printf("Bluetoothd or adapter unavailable\n");
 			return NULL;
@@ -331,29 +330,29 @@ static char *gdbus_create_paired_device(const char *adapter, const char *bdaddr,
 	printf("Bluetoothd adapter path: %s\n", adapter);
 
 	message = dbus_message_new_method_call("org.bluez", adapter,
-					       "org.bluez.Adapter",
-						//"CreateDevice");
-					       "CreatePairedOOBDevice");
+			"org.bluez.Adapter",
+			//"CreateDevice");
+			"CreatePairedOOBDevice");
 	if (!message) {
 		fprintf(stderr, "Can't allocate new method call\n");
 		return NULL;
 	}
 
 	dbus_message_append_args(message,
-				DBUS_TYPE_STRING, &bdaddr,
-				DBUS_TYPE_STRING, &oobrole,
-				DBUS_TYPE_ARRAY, DBUS_TYPE_BYTE,
-				&oobdata, len, DBUS_TYPE_INVALID);
+			DBUS_TYPE_STRING, &bdaddr,
+			DBUS_TYPE_STRING, &oobrole,
+			DBUS_TYPE_ARRAY, DBUS_TYPE_BYTE,
+			&oobdata, len, DBUS_TYPE_INVALID);
 
 	reply = dbus_connection_send_with_reply_and_block(conn,
-							  message, -1, NULL );
+			message, -1, NULL );
 	if (!reply) {
 		fprintf(stderr, "Can't get reply from dbus\n");
 		return NULL;
 	}
 
 	if (dbus_message_get_args(reply, NULL, DBUS_TYPE_OBJECT_PATH, &object_path,
-							DBUS_TYPE_INVALID) == FALSE)
+				DBUS_TYPE_INVALID) == FALSE)
 		return NULL;
 
 	dbus_message_unref(reply);

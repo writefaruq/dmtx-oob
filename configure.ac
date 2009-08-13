@@ -6,7 +6,6 @@ AM_CONFIG_HEADER(config.h)
 CXXFLAGS=""
 AC_SUBST(CXXFLAGS)
 AC_PROG_CXX
-AC_PROG_LIBTOOL
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
@@ -19,8 +18,6 @@ AC_PATH_LIBDMTX
 AC_PATH_DBUS
 AC_PATH_GLIB
 AC_PATH_BLUEZ
-AC_PATH_GDBUS
 
 AC_OUTPUT([ Makefile
-            gdbus/Makefile
-	    src/Makefile ])
+			src/Makefile ])

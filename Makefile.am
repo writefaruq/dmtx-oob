@@ -1,4 +1,4 @@
-SUBDIRS = gdbus src
+SUBDIRS = src
 
 dmtxoobdocdir = $(prefix)/share/doc/dmtxoob
 dmtxoobdoc_DATA = README COPYING AUTHORS ChangeLog INSTALL NEWS TODO
