@@ -1,5 +1,11 @@
+Dmtx-OOB for Bluez OOB support 
+Author: Md Omar Faruque Sarker <writefaruq@gmail.com> 
+Developed as a part of Bluez GSoC 2009 project 
+Mentor: Claudio Takahasi <claudio.takahasi@openbossa.org> 
+
 Intro
 =====================
+This app is developed to test OOB device creation and pairing using data matrix symbol 
 
 Assuming that dmtx symbol contains oob data as eir tag  in a predefined xml format this app can:
 - decode the symbol into text/xml file
@@ -10,3 +16,17 @@ Assuming that dmtx symbol contains oob data as eir tag  in a predefined xml form
 
 For more information, visit:
   http://github.com/writefaruq/dmtx-oob
+  
+Usage/Testing Guidelines
+==========================
+1. Create a data matrix symbol of local OOB data by running this script:
+$ cd /path/to/dmtx-oob/
+$ ./create-symbol.sh hciX (Replace X by the OOB capable adapter number such as 0 or 1 ...)
+
+2. Transfer the output of this script oob-symbol.png file to remote OOB host machine using network, usb etc.
+to remote /path/to/dmtx-oob/
+3. Run this app using remote symbol
+$ src/dmtxoob ./oob-symbol.png
+
+Please report any issue to the author at <writefaruq[[at]]gmail.com>  
+  
